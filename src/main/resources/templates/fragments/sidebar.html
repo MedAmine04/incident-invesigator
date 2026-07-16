@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar(active)">
+    <div class="brand">
+        <svg class="zellige" viewBox="0 0 100 100" fill="none">
+            <g stroke="#C9A24B" stroke-width="1.6">
+                <circle cx="50" cy="50" r="44" />
+                <path d="M50 6 L82 28 L94 50 L82 72 L50 94 L18 72 L6 50 L18 28 Z" />
+                <path d="M50 18 L70 32 L78 50 L70 68 L50 82 L30 68 L22 50 L30 32 Z" />
+                <path d="M50 30 L62 38 L66 50 L62 62 L50 70 L38 62 L34 50 L38 38 Z" />
+            </g>
+        </svg>
+        <div class="brand-text">
+            <div class="name">Investigator AI</div>
+            <div class="tag">Plateforme d'investigation</div>
+        </div>
+    </div>
+
+    <nav>
+        <a th:href="@{/}" th:classappend="${active == 'dashboard'} ? 'active'">&#9670; Tableau de bord</a>
+        <a th:href="@{/investigation}" th:classappend="${active == 'investigation'} ? 'active'">&#9670; Investigation IA</a>
+        <a th:href="@{/history}" th:classappend="${active == 'history'} ? 'active'">&#9670; Historique</a>
+        <a th:href="@{/incidents}" th:classappend="${active == 'incidents'} ? 'active'">&#9670; Incidents</a>
+        <a th:href="@{/transactions}" th:classappend="${active == 'transactions'} ? 'active'">&#9670; Transactions</a>
+        <a th:href="@{/contracts}" th:classappend="${active == 'contracts'} ? 'active'">&#9670; Contrats &amp; SLA</a>
+    </nav>
+
+    <div class="sidebar-quote">
+        &laquo; L'intelligence artificielle au service de l'excellence op&eacute;rationnelle. &raquo;
+    </div>
+</aside>
+</body>
+</html>

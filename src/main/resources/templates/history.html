@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique - Investigator AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <th:block th:replace="~{fragments/styles :: shared-styles}"></th:block>
+    <style>
+        .crit-pill { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px; display: inline-block; }
+        .crit-Faible { background: #E5F1EB; color: var(--green); }
+        .crit-Moyenne { background: var(--amber-bg); color: var(--gold); }
+        .crit-Critique { background: var(--red-bg); color: var(--red); }
+        .history-row { cursor: pointer; }
+        .conf-bar-track { width: 60px; height: 6px; background: #EEF1F7; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+        .conf-bar-fill { height: 100%; background: var(--gold); }
+    </style>
+</head>
+<body>
+
+<aside th:replace="~{fragments/sidebar :: sidebar('history')}"></aside>
+
+<main>
+    <header class="page-head">
+        <div>
+            <h1>Historique des investigations</h1>
+            <div class="subtitle">Registre complet des analyses multi-agents r&eacute;alis&eacute;es</div>
+        </div>
+        <div class="stack-pill" th:text="${histories.size()} + ' investigations archiv\u00e9es'">0 investigations archivées</div>
+    </header>
+
+    <section>
+        <div class="table-card">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Incident</th>
+                    <th>Criticit&eacute;</th>
+                    <th>Confiance</th>
+                    <th>Date</th>
+                    <th>Dur&eacute;e</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="h : ${histories}" class="history-row"
+                    th:onclick="|window.location.href='@{/history/{id}(id=${h.investigationId()})}'|">
+                    <td class="mono" th:text="${h.investigationId()}"></td>
+                    <td th:text="${h.client()}"></td>
+                    <td th:text="${#strings.abbreviate(h.incidentDescription(), 50)}"></td>
+                    <td><span class="crit-pill" th:class="'crit-pill crit-' + ${h.criticality()}" th:text="${h.criticality()}"></span></td>
+                    <td>
+                        <span class="conf-bar-track"><span class="conf-bar-fill" th:style="'width:' + ${h.confidence()} + '%'"></span></span>
+                        <span class="mono" th:text="${h.confidence()} + '%'"></span>
+                    </td>
+                    <td class="mono" th:text="${#temporals.format(h.generatedAt(), 'dd/MM/yyyy HH:mm')}"></td>
+                    <td class="mono" th:text="${h.executionTimeMs()} + ' ms'"></td>
+                    <td><a th:href="@{/reports/{id}/export-pdf(id=${h.investigationId()})}" onclick="event.stopPropagation()" class="chip">PDF</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty-state" th:if="${histories.isEmpty()}">
+            <div class="glyph">&#9670;</div>
+            Aucune investigation archiv&eacute;e pour le moment
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 HPS &middot; Hightech Payment Systems &middot; PFA 2026
+    </footer>
+</main>
+
+</body>
+</html>

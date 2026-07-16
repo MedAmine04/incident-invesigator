@@ -1,0 +1,11 @@
+La norme ISO 8583 definit le format des messages echanges entre systemes lors d'une transaction par carte bancaire (paiement, retrait, autorisation). Chaque message est identifie par un MTI (Message Type Indicator), un code de quatre chiffres qui precise la nature et la fonction du message.
+
+Le premier chiffre du MTI indique la version de la norme utilisee. Le deuxieme chiffre indique la classe du message : 1 pour une demande d'autorisation, 2 pour une reponse d'autorisation, 4 pour une demande d'annulation (reversal), 8 pour un message de gestion de reseau.
+
+Le troisieme chiffre precise la fonction : 0 pour une demande initiale (request), 1 pour une demande de re-emission (repeat), 2 pour une notification d'avis (advice).
+
+Le quatrieme chiffre indique l'origine du message : 0 si le message provient de l'accepteur (acquereur), 1 si le message provient de l'emetteur (issuer).
+
+Exemple courant : le MTI 0200 designe une demande d'autorisation initiale provenant de l'acquereur. Le MTI 0210 designe la reponse d'autorisation correspondante, provenant de l'emetteur.
+
+Un message ISO 8583 contient egalement des elements de donnees (data elements), numerotes de 1 a 128, qui transportent les informations de la transaction : montant, devise, date et heure, numero de carte, code de reponse, identifiant du terminal, et autres champs specifiques au reseau.

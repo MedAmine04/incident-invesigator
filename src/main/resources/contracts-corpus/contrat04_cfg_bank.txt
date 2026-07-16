@@ -1,0 +1,20 @@
+CONTRAT DE NIVEAU DE SERVICE (SLA) - CFG BANK
+Reference contrat : HPS-SLA-2024-004 (document fictif a usage pedagogique)
+
+Article 1 - Parties
+Le present contrat est conclu entre HPS et CFG Bank, ci-apres designe "le Client", dans le cadre d'une offre de service de niveau Standard.
+
+Article 2 - Delai de resolution des incidents
+Le delai de resolution garanti est de 8 heures pour un incident critique, 12 heures pour un incident majeur, et 24 heures pour un incident mineur.
+
+Article 3 - Penalites de retard
+Le depassement du delai garanti pour un incident critique entraine une penalite de 400 MAD par heure de retard, plafonnee a 3000 MAD par incident. Pour un incident majeur, la penalite est de 200 MAD par heure de retard, plafonnee a 1500 MAD. Aucune penalite n'est prevue pour un incident mineur.
+
+Article 4 - Perimetre couvert
+Le present accord couvre les incidents lies au traitement standard des transactions via le switch PowerCARD.
+
+Article 5 - Engagement de transparence
+En cas d'incident recurrent affectant plus de trois fois le meme type de transaction sur une periode de sept jours, HPS s'engage a fournir au Client un rapport d'analyse de cause racine dans un delai de 5 jours ouvres suivant la resolution du dernier incident de la serie.
+
+Article 6 - Exclusions
+Sont exclus les incidents resultant d'une panne de l'infrastructure propre au Client, les incidents lies a une maintenance planifiee et annoncee au moins 48 heures a l'avance, et les cas de force majeure.

@@ -1,0 +1,25 @@
+CONTRAT DE NIVEAU DE SERVICE (SLA) - ATTIJARIWAFA BANK
+Reference contrat : HPS-SLA-2024-001 (document fictif a usage pedagogique)
+
+Article 1 - Parties
+Le present contrat est conclu entre HPS, fournisseur de la plateforme de switching PowerCARD, et Attijariwafa Bank, etablissement bancaire client, ci-apres designe "le Client".
+
+Article 2 - Delai de resolution des incidents
+Pour tout incident transactionnel impactant les services du Client, classifie comme incident critique (impactant plus de 5% du volume transactionnel du Client ou rendant un service indisponible), le delai de resolution garanti est de 4 heures a compter de la detection de l'incident.
+
+Pour un incident classifie comme majeur (impactant entre 1% et 5% du volume transactionnel), le delai de resolution garanti est de 8 heures.
+
+Pour un incident classifie comme mineur (impact limite, contournement possible), le delai de resolution garanti est de 24 heures.
+
+Article 3 - Penalites de retard
+Tout depassement du delai de resolution garanti pour un incident critique entraine une penalite de 800 MAD par heure de retard, plafonnee a 8000 MAD par incident.
+
+Tout depassement du delai de resolution garanti pour un incident majeur entraine une penalite de 400 MAD par heure de retard, plafonnee a 4000 MAD par incident.
+
+Aucune penalite n'est due pour un incident mineur, sauf en cas de depassement superieur a 48 heures, ou une penalite forfaitaire de 1000 MAD s'applique.
+
+Article 4 - Perimetre couvert
+Le present accord couvre les incidents lies au traitement des transactions via le switch PowerCARD, incluant les timeouts d'autorisation, les rejets non conformes a la norme ISO 8583, et les anomalies de reconciliation transactionnelle.
+
+Article 5 - Exclusions
+Sont exclus du present SLA les incidents resultant d'une panne de l'infrastructure propre au Client (panne reseau interne, panne de son systeme d'autorisation), les incidents lies a une maintenance planifiee et annoncee au moins 72 heures a l'avance, et les cas de force majeure.

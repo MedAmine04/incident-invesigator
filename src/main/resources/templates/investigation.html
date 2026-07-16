@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigation IA - Investigator AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <th:block th:replace="~{fragments/styles :: shared-styles}"></th:block>
+    <style>
+        /* ---------- Loading overlay ---------- */
+        #loading-overlay {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-top: 0;
+        }
+        #loading-overlay.active { display: block; }
+
+        .load-step {
+            display: grid;
+            grid-template-columns: 28px 1fr 70px;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .load-step:last-child { border-bottom: none; }
+
+        .load-icon {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+        .load-icon.spinning {
+            border: 2px solid var(--border);
+            border-top-color: var(--gold);
+            animation: spin 0.8s linear infinite;
+        }
+        .load-icon.done { background: var(--green); border-color: var(--green); color: #fff; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .load-label { font-size: 13.5px; color: var(--text-mid); }
+        .load-label.active { color: var(--text); font-weight: 600; }
+        .load-time { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); text-align: right; }
+
+        /* ---------- Structured report ---------- */
+        .report-card {
+            background: var(--navy);
+            border-radius: 12px;
+            color: #E8EBF1;
+            overflow: hidden;
+        }
+        .report-header {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+        .report-stat {
+            background: var(--navy);
+            padding: 18px 20px;
+        }
+        .report-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold-soft); margin-bottom: 6px; }
+        .report-stat-value { font-size: 15px; font-weight: 700; color: #fff; }
+
+        .crit-Faible, .risk-Faible { color: #7BC99B; }
+        .crit-Moyenne, .risk-Moyen { color: var(--gold-soft); }
+        .crit-Critique, .risk-Eleve { color: #E08B83; }
+
+        .report-body { padding: 24px 28px; }
+        .report-section { margin-bottom: 22px; }
+        .report-section:last-child { margin-bottom: 0; }
+        .report-section-title {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--gold-soft);
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+        .report-summary {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 15px;
+            color: #fff;
+            line-height: 1.6;
+        }
+        .report-text { font-size: 13.5px; line-height: 1.7; color: #C7CEDC; }
+
+        .risk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .risk-item { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 14px 16px; }
+        .risk-item-label { font-size: 10.5px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+        .risk-item-value { font-size: 14px; font-weight: 700; }
+
+        .action-list { list-style: none; counter-reset: action-counter; }
+        .action-list li {
+            counter-increment: action-counter;
+            padding: 9px 0 9px 32px;
+            position: relative;
+            font-size: 13.5px;
+            color: #C7CEDC;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .action-list li:last-child { border-bottom: none; }
+        .action-list li::before {
+            content: counter(action-counter);
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 20px; height: 20px;
+            background: var(--gold);
+            color: var(--navy);
+            border-radius: 50%;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<aside th:replace="~{fragments/sidebar :: sidebar('investigation')}"></aside>
+
+<main>
+    <header class="page-head">
+        <div>
+            <h1>Centre d'investigation IA</h1>
+            <div class="subtitle">Analyse multi-agents d'un incident transactionnel</div>
+        </div>
+        <div class="stack-pill">3 agents &middot; orchestration s&eacute;quentielle</div>
+    </header>
+
+    <section>
+        <div class="section-title">D&eacute;crire l'incident</div>
+        <div class="invest-panel">
+            <form method="post" th:action="@{/investigate}" id="investigate-form" onsubmit="showLoading()">
+                <div class="invest-row">
+                    <div>
+                        <label for="incident">Description de l'incident</label>
+                        <input type="text" id="incident" name="incident"
+                               placeholder="Ex : Pic de timeout chez Banque Populaire à 14h"
+                               th:value="${incident}" required>
+                    </div>
+                    <div>
+                        <label for="client">Client concern&eacute;</label>
+                        <input type="text" id="client" name="client"
+                               placeholder="Banque Populaire"
+                               th:value="${client}" required>
+                    </div>
+                    <button type="submit" class="cta" id="submit-btn">&#10022; Lancer l'investigation</button>
+                </div>
+            </form>
+            <div class="suggestions">
+                <span class="chip" onclick="document.getElementById('incident').value=this.textContent;document.getElementById('client').value='Banque Populaire'">Timeouts Banque Populaire aujourd'hui</span>
+                <span class="chip" onclick="document.getElementById('incident').value=this.textContent;document.getElementById('client').value='Attijariwafa Bank'">Erreurs ISO 91 sur Attijariwafa</span>
+                <span class="chip" onclick="document.getElementById('incident').value=this.textContent;document.getElementById('client').value='CFG Bank'">D&eacute;lais de traitement d&eacute;pass&eacute;s</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="loading-section">
+        <div id="loading-overlay">
+            <div class="load-step" data-step="1">
+                <div class="load-icon" id="icon-1">1</div>
+                <div class="load-label" id="label-1">Agent technique &mdash; analyse des transactions</div>
+                <div class="load-time" id="time-1"></div>
+            </div>
+            <div class="load-step" data-step="2">
+                <div class="load-icon" id="icon-2">2</div>
+                <div class="load-label" id="label-2">Agent documentation &mdash; RAG ISO 8583</div>
+                <div class="load-time" id="time-2"></div>
+            </div>
+            <div class="load-step" data-step="3">
+                <div class="load-icon" id="icon-3">3</div>
+                <div class="load-label" id="label-3">Agent contractuel &mdash; RAG contrats &amp; SLA</div>
+                <div class="load-time" id="time-3"></div>
+            </div>
+            <div class="load-step" data-step="4">
+                <div class="load-icon" id="icon-4">4</div>
+                <div class="load-label" id="label-4">Orchestrateur &mdash; synth&egrave;se du rapport</div>
+                <div class="load-time" id="time-4"></div>
+            </div>
+        </div>
+    </section>
+
+    <section th:if="${submitted}">
+        <div class="section-title">Investigation multi-agents</div>
+        <div class="agent-grid">
+            <div class="agent-card">
+                <div class="agent-num n1">01</div>
+                <div class="agent-title">Agent Technique</div>
+                <div class="agent-sub">Analyse des transactions</div>
+                <div class="agent-status">&#10003; Compl&eacute;t&eacute;</div>
+                <div class="agent-text" th:text="${result.technicalFindings()}"></div>
+            </div>
+            <div class="agent-card">
+                <div class="agent-num n2">02</div>
+                <div class="agent-title">Agent Documentation</div>
+                <div class="agent-sub">RAG &middot; ISO 8583</div>
+                <div class="agent-status">&#10003; Compl&eacute;t&eacute;</div>
+                <div class="agent-text" th:text="${result.specificationFindings()}"></div>
+            </div>
+            <div class="agent-card">
+                <div class="agent-num n3">03</div>
+                <div class="agent-title">Agent Contractuel</div>
+                <div class="agent-sub">RAG &middot; Contrats &amp; SLA</div>
+                <div class="agent-status">&#10003; Compl&eacute;t&eacute;</div>
+                <div class="agent-text" th:text="${result.contractFindings()}"></div>
+            </div>
+            <div class="agent-card final">
+                <div class="agent-num n4">04</div>
+                <div class="agent-title">Statut</div>
+                <div class="agent-sub">Orchestrateur IA</div>
+                <div class="agent-status">&#10003; Termin&eacute;</div>
+                <div class="agent-text">Rapport structur&eacute; g&eacute;n&eacute;r&eacute; &mdash; voir ci-dessous.</div>
+            </div>
+        </div>
+    </section>
+
+    <section th:if="${submitted}">
+        <div class="section-title">Rapport d'investigation</div>
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-stat">
+                    <div class="report-stat-label">Client</div>
+                    <div class="report-stat-value" th:text="${result.report().client()}">Banque Populaire</div>
+                </div>
+                <div class="report-stat">
+                    <div class="report-stat-label">Criticit&eacute;</div>
+                    <div class="report-stat-value" th:class="'crit-' + ${result.report().criticality()}"
+                         th:text="${result.report().criticality()}">Moyenne</div>
+                </div>
+                <div class="report-stat">
+                    <div class="report-stat-label">Confiance</div>
+                    <div class="report-stat-value" th:text="${result.report().confidencePercent()} + ' %'">93 %</div>
+                </div>
+                <div class="report-stat">
+                    <div class="report-stat-label">Statut</div>
+                    <div class="report-stat-value" style="color:#7BC99B;">Termin&eacute;</div>
+                </div>
+            </div>
+
+            <div class="report-body">
+                <div class="report-section">
+                    <div class="report-section-title">R&eacute;sum&eacute; ex&eacute;cutif</div>
+                    <div class="report-summary" th:text="${result.report().executiveSummary()}"></div>
+                </div>
+
+                <div class="report-section">
+                    <div class="report-section-title">Cause probable</div>
+                    <div class="report-text" th:text="${result.report().probableCause()}"></div>
+                </div>
+
+                <div class="report-section">
+                    <div class="report-section-title">&Eacute;valuation des risques</div>
+                    <div class="risk-grid">
+                        <div class="risk-item">
+                            <div class="risk-item-label">Contractuel</div>
+                            <div class="risk-item-value" th:class="'risk-' + ${result.report().contractualRisk()}"
+                                 th:text="${result.report().contractualRisk()}">Faible</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-item-label">Op&eacute;rationnel</div>
+                            <div class="risk-item-value" th:class="'risk-' + ${result.report().operationalRisk()}"
+                                 th:text="${result.report().operationalRisk()}">Moyen</div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-item-label">Financier</div>
+                            <div class="risk-item-value" th:class="'risk-' + ${result.report().financialRisk()}"
+                                 th:text="${result.report().financialRisk()}">Faible</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <div class="report-section-title">Plan d'action recommand&eacute;</div>
+                    <ol class="action-list">
+                        <li th:each="action : ${result.report().actionPlan()}" th:text="${action}"></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:16px; text-align:right;">
+            <a th:href="@{/reports/{id}/export-pdf(id=${investigationId})}" class="cta" style="text-decoration:none; display:inline-block;">
+                &#11015; Exporter en PDF
+            </a>
+        </div>
+    </section>
+
+    <div class="empty-state" th:unless="${submitted}" id="empty-state">
+        <div class="glyph">&#9670;</div>
+        D&eacute;crivez un incident ci-dessus pour d&eacute;marrer l'investigation multi-agents
+    </div>
+
+    <footer>
+        &copy; 2026 HPS &middot; Hightech Payment Systems &middot; PFA 2026 &middot; Architecture multi-agents Spring AI
+    </footer>
+</main>
+
+<script>
+    function showLoading() {
+        document.getElementById('submit-btn').disabled = true;
+        document.getElementById('submit-btn').textContent = 'Investigation en cours...';
+        var emptyState = document.getElementById('empty-state');
+        if (emptyState) emptyState.style.display = 'none';
+
+        var overlay = document.getElementById('loading-overlay');
+        overlay.classList.add('active');
+
+        var steps = [1, 2, 3, 4];
+        var delays = [0, 4500, 9000, 13500]; // estimation indicative du temps par etape
+
+        steps.forEach(function (step, idx) {
+            setTimeout(function () {
+                var icon = document.getElementById('icon-' + step);
+                var label = document.getElementById('label-' + step);
+                icon.classList.add('spinning');
+                icon.textContent = '';
+                label.classList.add('active');
+
+                if (idx > 0) {
+                    var prevIcon = document.getElementById('icon-' + step.toString());
+                }
+            }, delays[idx]);
+        });
+
+        // Marque chaque etape precedente comme terminee quand la suivante demarre
+        for (var i = 0; i < steps.length - 1; i++) {
+            (function (stepNum, nextDelay) {
+                setTimeout(function () {
+                    var icon = document.getElementById('icon-' + stepNum);
+                    icon.classList.remove('spinning');
+                    icon.classList.add('done');
+                    icon.textContent = '✓';
+                }, nextDelay);
+            })(steps[i], delays[i + 1]);
+        }
+        // true: le formulaire continue sa soumission normale en arriere-plan
+        return true;
+    }
+</script>
+
+</body>
+</html>

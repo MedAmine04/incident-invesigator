@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - Investigator AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <th:block th:replace="~{fragments/styles :: shared-styles}"></th:block>
+</head>
+<body>
+
+<aside th:replace="~{fragments/sidebar :: sidebar('transactions')}"></aside>
+
+<main>
+    <header class="page-head">
+        <div>
+            <h1>Transactions</h1>
+            <div class="subtitle">Journal des transactions trait&eacute;es par le switch</div>
+        </div>
+        <div class="stack-pill" th:text="${totalCount} + ' transactions au total'">5000 transactions au total</div>
+    </header>
+
+    <section>
+        <div class="table-card">
+            <table>
+                <thead>
+                <tr>
+                    <th>R&eacute;f&eacute;rence</th>
+                    <th>Montant</th>
+                    <th>MTI</th>
+                    <th>Code r&eacute;ponse</th>
+                    <th>Banque &eacute;mettrice</th>
+                    <th>Statut</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="t : ${transactions}">
+                    <td class="mono" th:text="${t.transactionRef}"></td>
+                    <td class="mono" th:text="${t.amount} + ' ' + ${t.currency}"></td>
+                    <td class="mono" th:text="${t.mti}"></td>
+                    <td class="mono" th:text="${t.responseCode != null ? t.responseCode : '—'}"></td>
+                    <td th:text="${t.issuerBank}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${t.status.name() == 'APPROVED'} ? 'badge-approved' : (${t.status.name() == 'DECLINED'} ? 'badge-declined' : (${t.status.name() == 'TIMEOUT'} ? 'badge-timeout' : 'badge-error'))"
+                              th:text="${t.status}"></span>
+                    </td>
+                    <td class="mono" th:text="${#temporals.format(t.transactionTimestamp, 'dd/MM/yyyy HH:mm')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <a th:if="${currentPage > 0}" th:href="@{/transactions(page=${currentPage - 1})}">&larr; Pr&eacute;c&eacute;dent</a>
+            <span class="current" th:text="'Page ' + ${currentPage + 1} + ' / ' + ${totalPages}">Page 1 / 100</span>
+            <a th:if="${currentPage < totalPages - 1}" th:href="@{/transactions(page=${currentPage + 1})}">Suivant &rarr;</a>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 HPS &middot; Hightech Payment Systems &middot; PFA 2026
+    </footer>
+</main>
+
+</body>
+</html>

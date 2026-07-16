@@ -1,0 +1,21 @@
+Les codes de reponse ISO 8583 sont des codes a deux caracteres places dans l'element de donnees 39, qui indiquent le resultat d'une transaction. Voici les codes les plus frequemment rencontres dans un environnement de switch monetique.
+
+Code 00 : transaction approuvee. La transaction s'est deroulee normalement et a ete acceptee par l'emetteur.
+
+Code 05 : transaction refusee, raison non specifiee (do not honor). C'est le code de refus generique le plus courant, souvent utilise par defaut par l'emetteur sans justification detaillee.
+
+Code 14 : numero de carte invalide. Le numero de carte transmis ne correspond a aucun compte valide chez l'emetteur, ou contient une erreur de format.
+
+Code 51 : provision insuffisante (insufficient funds). Le compte du porteur de carte ne dispose pas des fonds necessaires pour couvrir le montant de la transaction.
+
+Code 54 : carte expiree. La date d'expiration de la carte est depassee.
+
+Code 61 : montant de la transaction superieur a la limite autorisee.
+
+Code 91 : emetteur indisponible (issuer or switch inoperative). L'emetteur n'a pas pu etre contacte dans le delai imparti, ou le systeme de l'emetteur est en panne. C'est un code frequemment associe a des timeouts.
+
+Code 96 : erreur systeme generale (system malfunction). Une erreur technique interne empeche le traitement de la transaction.
+
+Code 30 : erreur de format dans le message (format error). Un ou plusieurs champs du message ne respectent pas le format attendu par la norme.
+
+Une transaction qui n'obtient aucune reponse dans le delai imparti (timeout) n'a pas de code de reponse a proprement parler : elle est traitee comme un cas particulier distinct des refus avec code, car aucune decision n'a ete communiquee par l'emetteur.

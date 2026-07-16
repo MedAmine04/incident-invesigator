@@ -1,0 +1,22 @@
+CONTRAT DE NIVEAU DE SERVICE (SLA) - BANQUE POPULAIRE
+Reference contrat : HPS-SLA-2024-002 (document fictif a usage pedagogique)
+
+Article 1 - Parties
+Le present contrat est conclu entre HPS et Banque Populaire, ci-apres designe "le Client", dans le cadre d'une offre de service de niveau Premium.
+
+Article 2 - Delai de resolution des incidents
+Compte tenu du niveau de service Premium souscrit, le delai de resolution garanti pour un incident critique est de 2 heures a compter de la detection. Pour un incident majeur, le delai garanti est de 4 heures. Pour un incident mineur, le delai garanti est de 12 heures.
+
+Article 3 - Penalites de retard
+Le depassement du delai garanti pour un incident critique entraine une penalite de 1500 MAD par heure de retard, plafonnee a 12000 MAD par incident. Pour un incident majeur, la penalite est de 700 MAD par heure de retard, plafonnee a 6000 MAD.
+
+En cas de depassement repete (trois incidents critiques en retard sur une periode de trente jours), une penalite additionnelle forfaitaire de 5000 MAD s'applique, independamment des penalites horaires deja dues.
+
+Article 4 - Perimetre couvert
+Le present accord couvre l'ensemble des incidents transactionnels du switch PowerCARD, ainsi que les incidents lies a l'integration des terminaux de paiement et aux services de notification en temps reel.
+
+Article 5 - Astreinte
+Dans le cadre du niveau Premium, une astreinte technique HPS est garantie 24 heures sur 24 et 7 jours sur 7, incluant les jours feries.
+
+Article 6 - Exclusions
+Sont exclus les incidents resultant d'une cyberattaque averee contre l'infrastructure du Client, les pannes d'origine reseau hors du controle de HPS, et les cas de force majeure tels que definis par la legislation marocaine en vigueur.

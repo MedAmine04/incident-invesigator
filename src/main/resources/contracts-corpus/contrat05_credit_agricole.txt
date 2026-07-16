@@ -1,0 +1,20 @@
+CONTRAT DE NIVEAU DE SERVICE (SLA) - CREDIT AGRICOLE DU MAROC
+Reference contrat : HPS-SLA-2024-005 (document fictif a usage pedagogique)
+
+Article 1 - Parties
+Le present contrat est conclu entre HPS et Credit Agricole du Maroc, ci-apres designe "le Client".
+
+Article 2 - Delai de resolution des incidents
+Le delai de resolution garanti est de 5 heures pour un incident critique, 9 heures pour un incident majeur, et 20 heures pour un incident mineur.
+
+Article 3 - Penalites de retard
+Le depassement du delai garanti pour un incident critique entraine une penalite de 700 MAD par heure de retard, plafonnee a 6000 MAD par incident. Pour un incident majeur, la penalite est de 350 MAD par heure de retard, plafonnee a 3000 MAD.
+
+Article 4 - Clause specifique relative aux timeouts emetteur
+Le Client ayant connu par le passe des incidents recurrents de timeout lies a la disponibilite de son systeme d'autorisation, une clause specifique prevoit que si un incident de type timeout (code de reponse 91 ou absence de reponse) est determine, apres analyse conjointe, comme etant imputable a une indisponibilite du systeme du Client lui-meme et non a une defaillance du switch PowerCARD, le delai de resolution garanti et les penalites associees ne s'appliquent pas a HPS pour cet incident.
+
+Article 5 - Perimetre couvert
+Le present accord couvre les incidents lies au switch PowerCARD pour l'ensemble des canaux de paiement du Client, incluant les paiements en agence, les retraits aux distributeurs automatiques, et les paiements en ligne.
+
+Article 6 - Exclusions
+Sont exclus les incidents resultant d'une panne de l'infrastructure propre au Client tel que precise a l'article 4, les incidents lies a une maintenance planifiee et annoncee au moins 72 heures a l'avance, et les cas de force majeure.

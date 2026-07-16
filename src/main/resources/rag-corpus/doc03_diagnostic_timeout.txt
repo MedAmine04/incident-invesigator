@@ -1,0 +1,11 @@
+Note technique interne - Diagnostic des incidents de type timeout (code 91)
+
+Un volume anormalement eleve de transactions avec le code de reponse 91 (emetteur indisponible) ou en timeout pur, concentre sur une banque emettrice et une plage horaire precise, est generalement le signe d'un incident technique chez l'emetteur plutot que d'un probleme cote switch ou acquereur.
+
+Les causes les plus frequentes d'un pic de timeouts chez un emetteur sont : une surcharge temporaire de l'infrastructure de l'emetteur lors d'un pic de trafic, une maintenance planifiee ou non annoncee du systeme emetteur, un probleme de connectivite reseau entre le switch et l'emetteur, ou une panne applicative du systeme d'autorisation de l'emetteur.
+
+Procedure de diagnostic recommandee : verifier si le pic est concentre sur une seule banque emettrice ou reparti sur plusieurs banques. Un pic concentre sur une seule banque pointe vers un probleme cote emetteur. Un pic reparti sur plusieurs banques simultanement pointe plutot vers un probleme cote switch ou reseau central.
+
+Verifier ensuite la plage horaire du pic. Un pic recurrent a heure fixe peut indiquer une tache de maintenance planifiee chez l'emetteur (sauvegarde nocturne, traitement batch). Un pic isole et ponctuel est plus probablement du a un incident technique imprevu.
+
+Action recommandee en cas de pic confirme chez un emetteur unique : notifier l'equipe technique de la banque emettrice concernee, documenter l'heure de debut et de fin de l'incident, et verifier l'impact sur les engagements contractuels de delai de resolution avec cette banque.

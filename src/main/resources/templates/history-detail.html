@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport - Investigator AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <th:block th:replace="~{fragments/styles :: shared-styles}"></th:block>
+    <style>
+        .report-card { background: var(--navy); border-radius: 12px; color: #E8EBF1; overflow: hidden; }
+        .report-header { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(255,255,255,0.08); }
+        .report-stat { background: var(--navy); padding: 18px 20px; }
+        .report-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold-soft); margin-bottom: 6px; }
+        .report-stat-value { font-size: 15px; font-weight: 700; color: #fff; }
+        .crit-Faible, .risk-Faible { color: #7BC99B; }
+        .crit-Moyenne, .risk-Moyen { color: var(--gold-soft); }
+        .crit-Critique, .risk-Eleve { color: #E08B83; }
+        .report-body { padding: 24px 28px; }
+        .report-section { margin-bottom: 22px; }
+        .report-section:last-child { margin-bottom: 0; }
+        .report-section-title { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold-soft); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+        .report-summary { font-family: var(--font-display); font-style: italic; font-size: 15px; color: #fff; line-height: 1.6; }
+        .report-text { font-size: 13.5px; line-height: 1.7; color: #C7CEDC; }
+        .risk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .risk-item { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 14px 16px; }
+        .risk-item-label { font-size: 10.5px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+        .risk-item-value { font-size: 14px; font-weight: 700; }
+        .action-list { list-style: none; counter-reset: action-counter; }
+        .action-list li { counter-increment: action-counter; padding: 9px 0 9px 32px; position: relative; font-size: 13.5px; color: #C7CEDC; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .action-list li:last-child { border-bottom: none; }
+        .action-list li::before { content: counter(action-counter); position: absolute; left: 0; top: 8px; width: 20px; height: 20px; background: var(--gold); color: var(--navy); border-radius: 50%; font-family: var(--font-mono); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+        .back-link { display: inline-block; margin-bottom: 16px; color: var(--steel); font-size: 13px; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<aside th:replace="~{fragments/sidebar :: sidebar('history')}"></aside>
+
+<main>
+    <a th:href="@{/history}" class="back-link">&larr; Retour &agrave; l'historique</a>
+
+    <header class="page-head">
+        <div>
+            <h1>Rapport d'investigation</h1>
+            <div class="subtitle" th:text="${report.incidentDescription()}"></div>
+        </div>
+        <a th:href="@{/reports/{id}/export-pdf(id=${report.investigationId()})}" class="cta" style="text-decoration:none; display:inline-block;">
+            &#11015; Exporter en PDF
+        </a>
+    </header>
+
+    <section>
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-stat">
+                    <div class="report-stat-label">ID Investigation</div>
+                    <div class="report-stat-value" th:text="${report.investigationId()}"></div>
+                </div>
+                <div class="report-stat">
+                    <div class="report-stat-label">Client</div>
+                    <div class="report-stat-value" th:text="${report.client()}"></div>
+                </div>
+                <div class="report-stat">
+                    <div class="report-stat-label">Criticit&eacute;</div>
+                    <div class="report-stat-value" th:class="'crit-' + ${report.criticality()}" th:text="${report.criticality()}"></div>
+                </div>
+                <div class="report-stat">
+                    <div class="report-stat-label">Confiance</div>
+                    <div class="report-stat-value" th:text="${report.confidence()} + ' %'"></div>
+                </div>
+            </div>
+
+            <div class="report-body">
+                <div class="report-section">
+                    <div class="report-section-title">R&eacute;sum&eacute; ex&eacute;cutif</div>
+                    <div class="report-summary" th:text="${report.executiveSummary()}"></div>
+                </div>
+
+                <div class="report-section">
+                    <div class="report-section-title">Cause probable</div>
+                    <div class="report-text" th:text="${report.probableCause()}"></div>
+                </div>
+
+                <div class="report-section">
+                    <div class="report-section-title">Analyse technique</div>
+                    <div class="report-text" th:text="${report.technicalFindings()}"></div>
+                </div>
+
+                <div class="report-section">
+                    <div class="report-section-title">Analyse ISO 8583</div>
+                    <div class="report-text" th:text="${report.specificationFindings()}"></div>
+                </div>
+
+                <div class="report-section">
+                    <div class="report-section-title">Analyse contractuelle</div>
+                    <div class="report-text" th:text="${report.contractFindings()}"></div>
+                </div>
+
+                <div class="report-section">
+                    <div class="report-section-title">&Eacute;valuation des risques</div>
+                    <div class="risk-grid">
+                        <div class="risk-item">
+                            <div class="risk-item-label">Contractuel</div>
+                            <div class="risk-item-value" th:class="'risk-' + ${report.contractualRisk()}" th:text="${report.contractualRisk()}"></div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-item-label">Op&eacute;rationnel</div>
+                            <div class="risk-item-value" th:class="'risk-' + ${report.operationalRisk()}" th:text="${report.operationalRisk()}"></div>
+                        </div>
+                        <div class="risk-item">
+                            <div class="risk-item-label">Financier</div>
+                            <div class="risk-item-value" th:class="'risk-' + ${report.financialRisk()}" th:text="${report.financialRisk()}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <div class="report-section-title">Plan d'action recommand&eacute;</div>
+                    <ol class="action-list">
+                        <li th:each="action : ${report.recommendedActions()}" th:text="${action}"></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 HPS &middot; Hightech Payment Systems &middot; PFA 2026
+    </footer>
+</main>
+
+</body>
+</html>

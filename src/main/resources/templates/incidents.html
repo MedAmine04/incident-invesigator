@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incidents - Investigator AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <th:block th:replace="~{fragments/styles :: shared-styles}"></th:block>
+</head>
+<body>
+
+<aside th:replace="~{fragments/sidebar :: sidebar('incidents')}"></aside>
+
+<main>
+    <header class="page-head">
+        <div>
+            <h1>Incidents</h1>
+            <div class="subtitle">Liste des incidents transactionnels recens&eacute;s</div>
+        </div>
+        <div class="stack-pill" th:text="${incidents.size()} + ' incidents'">75 incidents</div>
+    </header>
+
+    <section>
+        <div class="table-card">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Description</th>
+                    <th>Statut</th>
+                    <th>D&eacute;tect&eacute; le</th>
+                    <th>Client</th>
+                    <th>Transactions li&eacute;es</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="inc : ${incidents}">
+                    <td class="mono" th:text="${inc.id}"></td>
+                    <td th:text="${inc.description}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${inc.status.name() == 'OPEN'} ? 'badge-open' : (${inc.status.name() == 'INVESTIGATING'} ? 'badge-investigating' : 'badge-resolved')"
+                              th:text="${inc.status}"></span>
+                    </td>
+                    <td class="mono" th:text="${#temporals.format(inc.detectedAt, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${inc.contract != null ? inc.contract.clientName : '—'}"></td>
+                    <td class="mono" th:text="${inc.relatedTransactions.size()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 HPS &middot; Hightech Payment Systems &middot; PFA 2026
+    </footer>
+</main>
+
+</body>
+</html>

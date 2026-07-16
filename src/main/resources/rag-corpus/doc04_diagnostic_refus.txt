@@ -1,0 +1,9 @@
+Note technique interne - Diagnostic d'une hausse des transactions refusees
+
+Une augmentation du taux de transactions refusees avec le code 51 (provision insuffisante) n'est generalement pas le signe d'un incident technique : il s'agit le plus souvent d'un comportement normal des porteurs de carte, et ne necessite pas d'investigation technique approfondie, sauf si la hausse est extreme et soudaine.
+
+En revanche, une hausse du taux de refus avec le code 05 (refus generique, do not honor) concentree sur un emetteur ou un marchand precis peut indiquer plusieurs scenarios distincts. Premier scenario : une regle de detection de fraude trop stricte activee recemment chez l'emetteur, qui bloque des transactions legitimes par erreur. Deuxieme scenario : un changement de configuration cote marchand qui rend les transactions non conformes aux attentes de l'emetteur. Troisieme scenario : une campagne de fraude reelle en cours, necessitant une vraie vigilance.
+
+Procedure de diagnostic recommandee : comparer le taux de refus actuel a la moyenne historique pour ce meme emetteur et ce meme marchand. Verifier si la hausse concerne un type de transaction precis (montant eleve, transaction internationale, paiement sans contact) ou l'ensemble des transactions indifferemment.
+
+Une hausse de refus limitee a un seul marchand pointe vers un probleme de configuration cote marchand. Une hausse limitee a un seul emetteur, sur plusieurs marchands, pointe vers une regle de fraude ou une politique interne recemment modifiee chez cet emetteur.

@@ -1,0 +1,11 @@
+Note technique interne - Diagnostic des ecarts de reconciliation
+
+La reconciliation transactionnelle consiste a verifier que chaque transaction traitee par le switch correspond bien a un enregistrement coherent chez l'acquereur et chez l'emetteur, avec un montant, une date et un statut identiques des trois cotes.
+
+Un ecart de reconciliation survient lorsque l'un des trois systemes (switch, acquereur, emetteur) enregistre une transaction differemment des deux autres. Les causes les plus frequentes sont : une transaction approuvee par l'emetteur mais dont l'avis de confirmation (advice, MTI se terminant par 2) ne parvient pas au switch en raison d'une coupure reseau, ce qui cree une transaction enregistree comme timeout cote switch alors qu'elle a ete reellement approuvee cote emetteur.
+
+Deuxieme cause frequente : un decalage d'horodatage entre les systemes, notamment lors du changement de jour ou de fuseau horaire, qui peut faire apparaitre une transaction comme dupliquee ou manquante dans les rapports de reconciliation journaliers.
+
+Troisieme cause : une transaction annulee (reversal, MTI commencant par 04) emise par l'acquereur mais non traitee correctement par l'emetteur, laissant la transaction originale active d'un cote et annulee de l'autre.
+
+Procedure de diagnostic recommandee : pour chaque transaction en ecart, comparer le MTI et le code de reponse enregistres cote switch avec ceux attendus. Un ecart concentre sur des transactions de type advice (MTI se terminant par 2) indique un probleme de transmission des avis de confirmation. Un ecart concentre en fin ou debut de journee indique un probleme d'horodatage entre systemes.

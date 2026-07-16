@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Investigator AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <th:block th:replace="~{fragments/styles :: shared-styles}"></th:block>
+    <style>
+        .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+        .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; }
+        .chart-card.full { grid-column: 1 / -1; }
+        .chart-title { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+        .chart-sub { font-size: 11px; color: var(--text-dim); margin-bottom: 18px; }
+
+        .donut-row { display: flex; align-items: center; gap: 28px; }
+        .donut-legend { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        .legend-item { display: flex; align-items: center; gap: 9px; font-size: 12.5px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .legend-label { color: var(--text-mid); flex: 1; }
+        .legend-value { font-family: var(--font-mono); font-weight: 600; color: var(--text); }
+
+        .hbar-list { display: flex; flex-direction: column; gap: 14px; }
+        .hbar-row { display: grid; grid-template-columns: 140px 1fr 50px; align-items: center; gap: 10px; }
+        .hbar-label { font-size: 12.5px; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hbar-track { background: #EEF1F7; border-radius: 4px; height: 10px; overflow: hidden; }
+        .hbar-fill { background: var(--gold); height: 100%; border-radius: 4px; }
+        .hbar-value { font-family: var(--font-mono); font-size: 12px; color: var(--text-mid); text-align: right; }
+
+        .vbar-chart { display: flex; align-items: flex-end; gap: 3px; height: 140px; padding-top: 10px; }
+        .vbar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+        .vbar-fill { width: 100%; background: var(--steel); border-radius: 2px 2px 0 0; min-height: 2px; }
+        .vbar-fill.peak { background: var(--gold); }
+        .vbar-hour { font-size: 8.5px; color: var(--text-dim); margin-top: 5px; font-family: var(--font-mono); }
+    </style>
+</head>
+<body>
+
+<aside th:replace="~{fragments/sidebar :: sidebar('dashboard')}"></aside>
+
+<main>
+    <header class="page-head">
+        <div>
+            <h1>Tableau de bord</h1>
+            <div class="subtitle">Vue d'ensemble de la plateforme &mdash; HPS Incident Investigator AI</div>
+        </div>
+        <div class="stack-pill">Java 21 &middot; Spring AI 2.0 &middot; Gemini &middot; PgVector</div>
+    </header>
+
+    <section>
+        <div class="kpi-row">
+            <div class="kpi">
+                <div class="kpi-icon navy">&#127974;</div>
+                <div>
+                    <div class="kpi-label">Transactions</div>
+                    <div class="kpi-value" th:text="${transactionCount}">5000</div>
+                    <div class="kpi-sub">Trait&eacute;es par le switch</div>
+                </div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-icon gold">&#9888;</div>
+                <div>
+                    <div class="kpi-label">Incidents</div>
+                    <div class="kpi-value" th:text="${incidentCount}">75</div>
+                    <div class="kpi-sub">Recens&eacute;s</div>
+                </div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-icon steel">&#128196;</div>
+                <div>
+                    <div class="kpi-label">Contrats</div>
+                    <div class="kpi-value" th:text="${contractCount}">15</div>
+                    <div class="kpi-sub">Actifs</div>
+                </div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-icon navy">&#9881;</div>
+                <div>
+                    <div class="kpi-label">Agents IA</div>
+                    <div class="kpi-value">3</div>
+                    <div class="kpi-sub">Op&eacute;rationnels</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-title">Analyse des donn&eacute;es</div>
+        <div class="chart-grid">
+
+            <!-- Graphique 1 : Donut repartition statuts transaction -->
+            <div class="chart-card">
+                <div class="chart-title">R&eacute;partition des transactions</div>
+                <div class="chart-sub">Par statut de traitement</div>
+                <div class="donut-row">
+                    <svg width="140" height="140" viewBox="0 0 140 140">
+                        <circle cx="70" cy="70" r="60" fill="none" stroke="#EEF1F7" stroke-width="16"/>
+                        <g th:each="seg : ${transactionDonut}">
+                            <circle cx="70" cy="70" r="60" fill="none"
+                                    th:stroke="${seg.color()}"
+                                    stroke-width="16"
+                                    th:stroke-dasharray="${seg.dashArrayLength()} + ' ' + ${seg.dashArrayGap()}"
+                                    th:stroke-dashoffset="${seg.dashOffset()}"
+                                    transform="rotate(-90 70 70)"/>
+                        </g>
+                    </svg>
+                    <div class="donut-legend">
+                        <div class="legend-item" th:each="seg : ${transactionDonut}">
+                            <span class="legend-dot" th:style="'background:' + ${seg.color()}"></span>
+                            <span class="legend-label" th:text="${seg.label()}">APPROVED</span>
+                            <span class="legend-value" th:text="${seg.percent()} + '%'">92%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphique 2 : Donut repartition statuts incidents -->
+            <div class="chart-card">
+                <div class="chart-title">R&eacute;partition des incidents</div>
+                <div class="chart-sub">Par statut de traitement</div>
+                <div class="donut-row">
+                    <svg width="140" height="140" viewBox="0 0 140 140">
+                        <circle cx="70" cy="70" r="60" fill="none" stroke="#EEF1F7" stroke-width="16"/>
+                        <g th:each="seg : ${incidentDonut}">
+                            <circle cx="70" cy="70" r="60" fill="none"
+                                    th:stroke="${seg.color()}"
+                                    stroke-width="16"
+                                    th:stroke-dasharray="${seg.dashArrayLength()} + ' ' + ${seg.dashArrayGap()}"
+                                    th:stroke-dashoffset="${seg.dashOffset()}"
+                                    transform="rotate(-90 70 70)"/>
+                        </g>
+                    </svg>
+                    <div class="donut-legend">
+                        <div class="legend-item" th:each="seg : ${incidentDonut}">
+                            <span class="legend-dot" th:style="'background:' + ${seg.color()}"></span>
+                            <span class="legend-label" th:text="${seg.label()}">OPEN</span>
+                            <span class="legend-value" th:text="${seg.percent()} + '%'">30%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphique 3 : Top banques par TIMEOUT -->
+            <div class="chart-card">
+                <div class="chart-title">Banques les plus impact&eacute;es</div>
+                <div class="chart-sub">Nombre de transactions en TIMEOUT</div>
+                <div class="hbar-list">
+                    <div class="hbar-row" th:each="bank : ${topBanks}">
+                        <div class="hbar-label" th:text="${bank.label()}">CFG Bank</div>
+                        <div class="hbar-track">
+                            <div class="hbar-fill" th:style="'width:' + ${bank.widthPercent()} + '%'"></div>
+                        </div>
+                        <div class="hbar-value" th:text="${bank.value()}">25</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphique 4 : Distribution horaire des TIMEOUT -->
+            <div class="chart-card">
+                <div class="chart-title">Distribution horaire des timeouts</div>
+                <div class="chart-sub">R&eacute;partition sur 24 heures &mdash; toutes banques confondues</div>
+                <div class="vbar-chart">
+                    <div class="vbar-col" th:each="hb : ${hourlyBars}">
+                        <div class="vbar-fill" th:classappend="${hb.isPeak()} ? 'peak'"
+                             th:style="'height:' + ${hb.heightPercent()} + '%'"
+                             th:title="${hb.value()} + ' timeouts à ' + ${hb.hour()} + 'h'"></div>
+                        <div class="vbar-hour" th:text="${hb.hour()}" th:if="${hb.hour() % 3 == 0}"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section>
+        <div class="section-title">Architecture multi-agents</div>
+        <div class="agent-grid">
+            <div class="agent-card">
+                <div class="agent-num n1">01</div>
+                <div class="agent-title">Agent Technique</div>
+                <div class="agent-sub">Tool calling sur transactions</div>
+                <div class="agent-status">&#9679; Op&eacute;rationnel</div>
+                <div class="agent-text">Analyse les volumes, statuts et distributions horaires des transactions via 6 outils sp&eacute;cialis&eacute;s.</div>
+            </div>
+            <div class="agent-card">
+                <div class="agent-num n2">02</div>
+                <div class="agent-title">Agent Documentation</div>
+                <div class="agent-sub">RAG &middot; ISO 8583</div>
+                <div class="agent-status">&#9679; Op&eacute;rationnel</div>
+                <div class="agent-text">Interpr&egrave;te les codes et incidents techniques &agrave; partir de la documentation ISO 8583 vectoris&eacute;e.</div>
+            </div>
+            <div class="agent-card">
+                <div class="agent-num n3">03</div>
+                <div class="agent-title">Agent Contractuel</div>
+                <div class="agent-sub">RAG &middot; Contrats &amp; SLA</div>
+                <div class="agent-status">&#9679; Op&eacute;rationnel</div>
+                <div class="agent-text">&Eacute;value l'impact contractuel et les p&eacute;nalit&eacute;s applicables selon le client concern&eacute;.</div>
+            </div>
+            <div class="agent-card final">
+                <div class="agent-num n4">04</div>
+                <div class="agent-title">Orchestrateur</div>
+                <div class="agent-sub">Synth&egrave;se s&eacute;quentielle</div>
+                <div class="agent-status">&#9679; Op&eacute;rationnel</div>
+                <div class="agent-text">Coordonne les trois agents et g&eacute;n&egrave;re un rapport d'investigation structur&eacute;.</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="invest-panel" style="text-align:center; padding: 32px;">
+            <div style="font-family: var(--font-display); font-size: 18px; color: var(--navy); font-weight: 700; margin-bottom: 8px;">
+                Pr&ecirc;t &agrave; investiguer un incident ?
+            </div>
+            <div style="color: var(--text-mid); font-size: 13px; margin-bottom: 18px;">
+                Lancez une analyse multi-agents compl&egrave;te sur un incident transactionnel.
+            </div>
+            <a th:href="@{/investigation}" class="cta" style="display:inline-block; text-decoration:none; padding: 13px 28px;">
+                &#10022; Ouvrir le centre d'investigation
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 HPS &middot; Hightech Payment Systems &middot; PFA 2026 &middot; Architecture multi-agents Spring AI
+    </footer>
+</main>
+
+</body>
+</html>

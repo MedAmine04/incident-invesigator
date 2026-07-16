@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:fragment="shared-styles">
+    <style>
+        :root {
+            --navy: #0E1F3D;
+            --navy-light: #15294F;
+            --gold: #C9A24B;
+            --gold-soft: #E8D6A8;
+            --steel: #2D4D7A;
+            --green: #3F8A5C;
+            --amber-bg: #FBF1DD;
+            --red: #B0473F;
+            --red-bg: #FBEAE8;
+            --blue-bg: #E7EEF8;
+            --bg: #F7F8FA;
+            --card: #FFFFFF;
+            --border: #E4E7EC;
+            --text: #1B2230;
+            --text-mid: #5B6472;
+            --text-dim: #8A93A3;
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        aside { background: var(--navy); color: #D9DEE8; padding: 28px 20px; display: flex; flex-direction: column; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 36px; }
+        .zellige { width: 36px; height: 36px; flex-shrink: 0; }
+        .brand-text .name { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: #fff; }
+        .brand-text .tag { font-size: 10px; color: var(--gold-soft); letter-spacing: 0.08em; text-transform: uppercase; }
+
+        nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+        nav a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px; color: #B7C0D1; text-decoration: none; font-size: 14px; font-weight: 500; transition: background 0.15s ease; }
+        nav a:hover { background: var(--navy-light); color: #fff; }
+        nav a.active { background: var(--gold); color: var(--navy); font-weight: 600; }
+
+        .sidebar-quote { margin-top: auto; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); font-family: var(--font-display); font-style: italic; font-size: 12px; color: var(--gold-soft); line-height: 1.5; }
+
+        main { padding: 36px 44px; max-width: 1180px; }
+
+        header.page-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+        h1 { font-family: var(--font-display); font-size: 30px; color: var(--navy); font-weight: 700; }
+        .subtitle { color: var(--text-mid); font-size: 14px; margin-top: 4px; }
+        .stack-pill { font-family: var(--font-mono); font-size: 11px; color: var(--steel); background: #EEF1F7; border: 1px solid var(--border); padding: 7px 13px; border-radius: 20px; white-space: nowrap; }
+
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+        .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; display: flex; gap: 14px; align-items: flex-start; }
+        .kpi-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+        .kpi-icon.navy { background: var(--navy); color: var(--gold-soft); }
+        .kpi-icon.gold { background: var(--gold-soft); color: var(--navy); }
+        .kpi-icon.steel { background: #E4ECF6; color: var(--steel); }
+        .kpi-label { font-size: 12px; color: var(--text-dim); margin-bottom: 2px; }
+        .kpi-value { font-size: 22px; font-weight: 700; color: var(--text); }
+        .kpi-sub { font-size: 11px; color: var(--text-dim); }
+
+        section { margin-bottom: 32px; }
+        .section-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, var(--gold-soft), transparent); }
+
+        .invest-panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+        .invest-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; }
+        label { display: block; font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+        input[type=text] { width: 100%; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; padding: 13px 14px; font-size: 14px; color: var(--text); font-family: var(--font-body); }
+        input[type=text]:focus { outline: none; border-color: var(--gold); background: #fff; }
+
+        button.cta { background: var(--navy); color: #fff; border: none; font-weight: 600; font-size: 14px; padding: 13px 22px; border-radius: 8px; cursor: pointer; white-space: nowrap; transition: background 0.15s ease; }
+        button.cta:hover { background: var(--navy-light); }
+        button.cta:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+        .suggestions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+        .chip { font-size: 12px; color: var(--steel); background: #EEF1F7; border: 1px solid var(--border); padding: 7px 12px; border-radius: 16px; cursor: pointer; font-family: var(--font-body); }
+        .chip:hover { background: var(--gold-soft); color: var(--navy); border-color: var(--gold); }
+
+        .agent-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        .agent-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; position: relative; }
+        .agent-card.final { border-color: var(--gold); background: #FFFCF5; }
+        .agent-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+        .agent-num.n1, .agent-num.n3 { background: var(--navy); color: #fff; }
+        .agent-num.n2, .agent-num.n4 { background: var(--gold); color: var(--navy); }
+        .agent-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+        .agent-sub { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; }
+        .agent-status { font-size: 11px; color: var(--green); font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+        .agent-text { font-size: 12.5px; color: var(--text-mid); line-height: 1.55; max-height: 220px; overflow-y: auto; white-space: pre-wrap; }
+
+        .synthesis-panel { background: var(--navy); border-radius: 12px; padding: 26px 28px; color: #E8EBF1; }
+        .synthesis-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+        .synthesis-text { font-size: 13.5px; line-height: 1.7; color: #C7CEDC; white-space: pre-wrap; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-dim); font-size: 13px; }
+        .empty-state .glyph { font-size: 30px; color: var(--gold-soft); margin-bottom: 10px; }
+
+        footer { margin-top: 40px; text-align: center; font-size: 11px; color: var(--text-dim); padding-top: 20px; border-top: 1px solid var(--border); }
+
+        /* ---------- Tables (incidents, contrats, transactions) ---------- */
+        .table-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-dim);
+            background: #FAFBFC;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+        }
+        tbody td {
+            padding: 13px 18px;
+            font-size: 13.5px;
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: #FAFBFC; }
+        .mono { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-mid); }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        .badge-open { background: var(--red-bg); color: var(--red); }
+        .badge-investigating { background: var(--amber-bg); color: var(--gold); }
+        .badge-resolved { background: #E5F1EB; color: var(--green); }
+        .badge-approved { background: #E5F1EB; color: var(--green); }
+        .badge-declined { background: var(--red-bg); color: var(--red); }
+        .badge-timeout { background: var(--amber-bg); color: var(--gold); }
+        .badge-error { background: var(--red-bg); color: var(--red); }
+
+        .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 18px; }
+        .pagination a, .pagination span {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            padding: 8px 13px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--steel);
+            text-decoration: none;
+            background: var(--card);
+        }
+        .pagination a:hover { background: var(--gold-soft); color: var(--navy); }
+        .pagination .current { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+        @media (max-width: 1000px) {
+            body { grid-template-columns: 1fr; }
+            aside { display: none; }
+            .kpi-row, .agent-grid { grid-template-columns: repeat(2, 1fr); }
+            .invest-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</th:block>
+</head>
+<body></body>
+</html>

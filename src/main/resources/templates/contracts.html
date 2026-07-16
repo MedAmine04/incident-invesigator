@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrats - Investigator AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <th:block th:replace="~{fragments/styles :: shared-styles}"></th:block>
+</head>
+<body>
+
+<aside th:replace="~{fragments/sidebar :: sidebar('contracts')}"></aside>
+
+<main>
+    <header class="page-head">
+        <div>
+            <h1>Contrats &amp; SLA</h1>
+            <div class="subtitle">Engagements de niveau de service par client</div>
+        </div>
+        <div class="stack-pill" th:text="${contracts.size()} + ' contrats actifs'">15 contrats actifs</div>
+    </header>
+
+    <section>
+        <div class="table-card">
+            <table>
+                <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>D&eacute;lai de r&eacute;solution (SLA)</th>
+                    <th>P&eacute;nalit&eacute; / heure</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${contracts}">
+                    <td th:text="${c.clientName}"></td>
+                    <td class="mono" th:text="${c.slaResolutionHours} + ' heures'"></td>
+                    <td class="mono" th:text="${c.penaltyPerHourLate} + ' MAD'"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 HPS &middot; Hightech Payment Systems &middot; PFA 2026
+    </footer>
+</main>
+
+</body>
+</html>

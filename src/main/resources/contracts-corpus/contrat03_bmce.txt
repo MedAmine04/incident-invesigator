@@ -1,0 +1,20 @@
+CONTRAT DE NIVEAU DE SERVICE (SLA) - BMCE BANK
+Reference contrat : HPS-SLA-2024-003 (document fictif a usage pedagogique)
+
+Article 1 - Parties
+Le present contrat est conclu entre HPS et BMCE Bank, ci-apres designe "le Client".
+
+Article 2 - Delai de resolution des incidents
+Le delai de resolution garanti est de 6 heures pour un incident critique, 10 heures pour un incident majeur, et 24 heures pour un incident mineur, a compter de la detection de l'incident par les equipes de supervision de HPS.
+
+Article 3 - Penalites de retard
+Le depassement du delai garanti pour un incident critique entraine une penalite de 600 MAD par heure de retard, plafonnee a 5000 MAD par incident. Pour un incident majeur, la penalite est de 300 MAD par heure de retard, plafonnee a 2500 MAD.
+
+Article 4 - Clause specifique de reconciliation
+En raison du volume eleve de transactions internationales traitees par le Client, une clause specifique s'applique aux incidents de reconciliation transactionnelle : le delai de resolution garanti pour ce type d'incident est etendu a 12 heures, en raison de la complexite accrue du rapprochement multi-devises.
+
+Article 5 - Perimetre couvert
+Le present accord couvre les incidents lies au switch PowerCARD, incluant specifiquement les ecarts de reconciliation entre le switch, l'acquereur et l'emetteur, ainsi que les anomalies liees au traitement des transactions en devises etrangeres.
+
+Article 6 - Exclusions
+Sont exclus les incidents lies a une evolution reglementaire imposant une modification urgente non planifiee, les incidents resultant d'une erreur de configuration du cote du Client, et les cas de force majeure.
